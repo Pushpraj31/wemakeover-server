@@ -74,9 +74,9 @@ app.get('/', (req, res) => {
 });
 
 // Export for Vercel instead of listen
-export default app;
+//export default app;
 
 // for developemental
-// app.listen(3000, () => {
-//   console.log('Server is running on port 3000');
-//  });
+ app.listen(3000, () => {
+   console.log('Server is running on port 3000');
+  });
