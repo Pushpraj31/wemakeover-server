@@ -1,0 +1,184 @@
+{
+  "info": {
+    "name": "Booking Config - MOV Tests",
+    "description": "Test suite for Minimum Order Value validation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Seed Configs (Run First)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/admin/booking-config/seed",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "admin", "booking-config", "seed"]
+        },
+        "description": "Seeds initial configs including MOV=999"
+      }
+    },
+    {
+      "name": "2. Get MOV Config",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/admin/booking-config/MINIMUM_ORDER_VALUE",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "admin", "booking-config", "MINIMUM_ORDER_VALUE"]
+        },
+        "description": "Verify MOV is 999"
+      }
+    },
+    {
+      "name": "3. Test: Order Below MOV (Should Fail)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"services\": [\n    {\n      \"name\": \"Basic Facial\",\n      \"description\": \"Simple facial treatment\",\n      \"price\": 500,\n      \"quantity\": 1,\n      \"category\": \"Regular\",\n      \"duration\": 45\n    }\n  ],\n  \"bookingDetails\": {\n    \"date\": \"2025-12-01\",\n    \"slot\": \"10:00 AM\",\n    \"duration\": 45,\n    \"address\": {\n      \"houseFlatNumber\": \"123\",\n      \"streetAreaName\": \"MG Road\",\n      \"completeAddress\": \"123, MG Road, Gaya, Bihar, 823001\",\n      \"city\": \"Gaya\",\n      \"state\": \"Bihar\",\n      \"pincode\": \"823001\",\n      \"phone\": \"9876543210\"\n    }\n  },\n  \"pricing\": {\n    \"subtotal\": 500,\n    \"taxAmount\": 90,\n    \"totalAmount\": 590,\n    \"currency\": \"INR\"\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/bookings",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "bookings"]
+        },
+        "description": "Order with subtotal ₹500 < MOV ₹999 - Should return 400 error"
+      }
+    },
+    {
+      "name": "4. Test: Order Exactly at MOV (Should Pass)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"services\": [\n    {\n      \"name\": \"Premium Facial\",\n      \"description\": \"Luxury facial treatment\",\n      \"price\": 999,\n      \"quantity\": 1,\n      \"category\": \"Regular\",\n      \"duration\": 60\n    }\n  ],\n  \"bookingDetails\": {\n    \"date\": \"2025-12-01\",\n    \"slot\": \"11:00 AM\",\n    \"duration\": 60,\n    \"address\": {\n      \"houseFlatNumber\": \"123\",\n      \"streetAreaName\": \"MG Road\",\n      \"completeAddress\": \"123, MG Road, Gaya, Bihar, 823001\",\n      \"city\": \"Gaya\",\n      \"state\": \"Bihar\",\n      \"pincode\": \"823001\",\n      \"phone\": \"9876543210\"\n    }\n  },\n  \"pricing\": {\n    \"subtotal\": 999,\n    \"taxAmount\": 180,\n    \"totalAmount\": 1179,\n    \"currency\": \"INR\"\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/bookings",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "bookings"]
+        },
+        "description": "Order with subtotal ₹999 = MOV ₹999 - Should create booking"
+      }
+    },
+    {
+      "name": "5. Test: Order Above MOV (Should Pass)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"services\": [\n    {\n      \"name\": \"Cleanup\",\n      \"description\": \"Deep cleansing facial\",\n      \"price\": 599,\n      \"quantity\": 1,\n      \"category\": \"Regular\",\n      \"duration\": 45\n    },\n    {\n      \"name\": \"Anti-Ageing Facial\",\n      \"description\": \"Premium anti-ageing treatment\",\n      \"price\": 810,\n      \"quantity\": 1,\n      \"category\": \"Regular\",\n      \"duration\": 60\n    }\n  ],\n  \"bookingDetails\": {\n    \"date\": \"2025-12-01\",\n    \"slot\": \"02:00 PM\",\n    \"duration\": 105,\n    \"address\": {\n      \"houseFlatNumber\": \"123\",\n      \"streetAreaName\": \"MG Road\",\n      \"completeAddress\": \"123, MG Road, Gaya, Bihar, 823001\",\n      \"city\": \"Gaya\",\n      \"state\": \"Bihar\",\n      \"pincode\": \"823001\",\n      \"phone\": \"9876543210\"\n    }\n  },\n  \"pricing\": {\n    \"subtotal\": 1409,\n    \"taxAmount\": 254,\n    \"totalAmount\": 1663,\n    \"currency\": \"INR\"\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/bookings",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "bookings"]
+        },
+        "description": "Order with subtotal ₹1409 > MOV ₹999 - Should create booking"
+      }
+    },
+    {
+      "name": "6. Update MOV to 1299",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"value\": 1299,\n  \"reason\": \"Testing MOV update\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/admin/booking-config/MINIMUM_ORDER_VALUE",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "admin", "booking-config", "MINIMUM_ORDER_VALUE"]
+        },
+        "description": "Update MOV to test dynamic changes"
+      }
+    },
+    {
+      "name": "7. Test: Order Below New MOV (Should Fail)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"services\": [\n    {\n      \"name\": \"Premium Facial\",\n      \"description\": \"Luxury facial treatment\",\n      \"price\": 999,\n      \"quantity\": 1,\n      \"category\": \"Regular\",\n      \"duration\": 60\n    }\n  ],\n  \"bookingDetails\": {\n    \"date\": \"2025-12-01\",\n    \"slot\": \"03:00 PM\",\n    \"duration\": 60,\n    \"address\": {\n      \"houseFlatNumber\": \"123\",\n      \"streetAreaName\": \"MG Road\",\n      \"completeAddress\": \"123, MG Road, Gaya, Bihar, 823001\",\n      \"city\": \"Gaya\",\n      \"state\": \"Bihar\",\n      \"pincode\": \"823001\",\n      \"phone\": \"9876543210\"\n    }\n  },\n  \"pricing\": {\n    \"subtotal\": 999,\n    \"taxAmount\": 180,\n    \"totalAmount\": 1179,\n    \"currency\": \"INR\"\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/bookings",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "bookings"]
+        },
+        "description": "After updating MOV to 1299, order with 999 should fail"
+      }
+    },
+    {
+      "name": "8. Reset MOV to 999",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"value\": 999,\n  \"reason\": \"Resetting to original value\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/admin/booking-config/MINIMUM_ORDER_VALUE",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "admin", "booking-config", "MINIMUM_ORDER_VALUE"]
+        },
+        "description": "Reset MOV back to 999"
+      }
+    }
+  ]
+}
+
