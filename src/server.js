@@ -46,7 +46,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/", contactRouter);
-app.use('/auth', authRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/services', serviceRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/addresses', addressRouter);
