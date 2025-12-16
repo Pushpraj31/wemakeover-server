@@ -27,7 +27,7 @@ const app = express();
 // Middleware
 app.use(helmet());
 
-const allowedOrigins = [process.env.CLIENT_URL, 'https://wemakeover.netlify.app' ,'http://localhost:5173', 'http://localhost:5174'];
+const allowedOrigins = [process.env.CLIENT_URL, 'https://wemakeover.netlify.app' ,'http://localhost:5173', 'http://localhost:5174', 'http://13.61.183.148'];
 
 app.use(cors({
   origin: function (origin, callback) {
