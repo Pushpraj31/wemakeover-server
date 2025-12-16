@@ -80,3 +80,21 @@ app.get('/', (req, res) => {
  app.listen(3000, () => {
    console.log('Server is running on port 3000');
   });
+// Handle 404 API routes
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return res.status(404).json({
+      success: false,
+      message: "API route not found"
+    });
+  }
+  next();
+});
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error"
+  });
+});
